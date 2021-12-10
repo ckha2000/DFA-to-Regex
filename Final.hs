@@ -21,7 +21,7 @@ type Automaton st sy = ([st], [sy], [st], [st], [(st,sy,st)])
         -- Transitions are in the form of Regexes rather than a single symbol
         -- Only contains a single initial and a single accept state
         -- Every state (aside from the initial and final states) has a transition to every other state
-        -- Every state implicitly has a transition of OneRE to itself
+        -- Every state implicitly has a transition of OneRE to itself if it is not already defined
         -- A transition of ZeroRE implies no path
 
 -- Q: states
@@ -46,6 +46,19 @@ dfa1 = ([1,2,3], ['a', 'b', 'c'], [1], [3], [(1,'a',2), (1,'b',1), (2, 'c', 3)])
 dfa2 :: Automaton Int Char
 dfa2 = ([1], ['a', 'b', 'c'], [1], [1], [(1,'a',1), (1,'b',1), (1, 'c', 1)])
 
+
+data SegmentCV = C | V deriving (Show, Eq)
+dfa3 :: Automaton Int SegmentCV
+dfa3 = ([1,2,3], [C,V], [1], [3], [(1, C, 1),
+                                   (1, V, 1),
+                                   (1, V, 2),
+                                   (2, C, 3)])
+
+-- long example
+dfa4 :: Automaton Int SegmentCV
+dfa4 = ([1,2,3], [C,V], [1], [1], [(1, V, 1), (1, C, 2), (1, V, 3), 
+                                           (2, V, 1), (2, V, 3), 
+                                           (3, C, 1)])
 
 ---------------------------------------
 -- Helpers for combining RegExps 
